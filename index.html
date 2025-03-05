@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Study Quest</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #030b21;
+            color: #fff;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 200px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 260px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 300px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 360px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 400px 110px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 450px 30px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 500px 500px;
+        }
+        
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        
+        .app-container {
+            display: none;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #8be9fd;
+            text-shadow: 0 0 10px #8be9fd;
+            margin-bottom: 30px;
+        }
+        
+        .login-form {
+            background-color: rgba(16, 26, 63, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid #5151f9;
+            box-shadow: 0 0 20px rgba(139, 233, 253, 0.3);
+            width: 300px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #5151f9;
+            background-color: #192a56;
+            color: white;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #5151f9, #8be9fd);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(139, 233, 253, 0.5);
+        }
+        
+        .journey-path {
+            position: relative;
+            margin-top: 50px;
+            padding-bottom: 50px;
+        }
+        
+        .path-line {
+            position: absolute;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #5151f9, #8be9fd);
+            z-index: 1;
+            box-shadow: 0 0 10px #8be9fd;
+        }
+        
+        .milestones {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .milestone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+        }
+        
+        .planet {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #5151f9, #8be9fd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(139, 233, 253, 0.5);
+        }
+        
+        .planet:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(139, 233, 253, 0.8);
+        }
+        
+        .planet.completed {
+            background: linear-gradient(45deg, #50fa7b, #8be9fd);
+        }
+        
+        .planet.locked {
+            background: linear-gradient(45deg, #44475a, #6272a4);
+            cursor: not-allowed;
+        }
+        
+        .milestone-date {
+            font-size: 12px;
+            color: #8be9fd;
+            margin-top: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: rgba(16, 26, 63, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 80%;
+            text-align: center;
+            position: relative;
+            border: 1px solid #5151f9;
+            box-shadow: 0 0 30px rgba(139, 233, 253, 0.5);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #8be9fd;
+        }
+        
+        .milestone-content img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 0 15px rgba(139, 233, 253, 0.3);
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #8be9fd;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        
+        .reward {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(80, 250, 123, 0.2);
+            border-radius: 10px;
+            border: 1px solid #50fa7b;
+        }
+        
+        .progress-summary {
+            background-color: rgba(16, 26, 63, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 40px;
+            border: 1px solid #5151f9;
+        }
+        
+        .countdown {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #8be9fd;
+        }
+        
+        .rocket {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%238be9fd"><path d="M12 2.5s-9 5.5-9 11.5c0 5 4 9 9 9s9-4 9-9c0-6-9-11.5-9-11.5zm0 18c-3.9 0-7-3.1-7-7 0-3.7 3.6-7.4 7-9.9 3.4 2.5 7 6.2 7 9.9 0 3.9-3.1 7-7 7z"/></svg>');
+            background-repeat: no-repeat;
+            z-index: 3;
+            top: 82px;
+            left: 20px;
+            transition: left 1s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .milestones {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-left: 30px;
+            }
+            
+            .milestone {
+                margin-bottom: 40px;
+                flex-direction: row;
+                width: 100%;
+            }
+            
+            .milestone-date {
+                margin-left: 20px;
+                margin-top: 0;
+            }
+            
+            .path-line {
+                width: 4px;
+                height: 100%;
+                left: 30px;
+                top: 0;
+            }
+            
+            .rocket {
+                top: 20px;
+                left: 12px;
+                transition: top 1s ease;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <h1>Cosmic Study Quest</h1>
+        <div class="login-form">
+            <h2>Mission Control Access</h2>
+            <p>Enter the launch code to begin your cosmic journey</p>
+            <input type="password" id="password" placeholder="Enter launch code">
+            <button onclick="checkPassword()">Initiate Mission</button>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <h1>Cosmic Study Quest: Journey to Exam Day</h1>
+        
+        <div class="countdown">
+            <span id="examCountdown">Loading mission countdown...</span>
+        </div>
+        
+        <div class="journey-path">
+            <div class="path-line"></div>
+            <div class="rocket" id="progressRocket"></div>
+            <div class="milestones" id="milestonesContainer">
+                <!-- Milestones will be generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="progress-summary">
+            <h2>Mission Progress</h2>
+            <p>Milestones completed: <span id="completedCount">0</span> of <span id="totalCount">0</span></p>
+            <p>Keep going, Commander! Your knowledge expands with each study session.</p>
+        </div>
+    </div>
+    
+    <!-- Milestone Modal -->
+    <div class="modal" id="milestoneModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Milestone Title</h2>
+            <div class="milestone-content" id="modalContent">
+                <!-- Content will be filled by JavaScript -->
+            </div>
+            <div id="completionControls">
+                <button id="completeButton" onclick="markComplete()">Mark as Completed</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Set the password
+        const accessCode = "studyspace";
+        
+        // The exam date
+        const examDate = new Date('April 10, 2025');
+        
+        // Define study weekends from now until exam
+        function generateWeekends() {
+            const weekends = [];
+            const today = new Date();
+            let currentDate = new Date(today);
+            
+            // Find the next Saturday
+            while (currentDate.getDay() !== 6) { // 6 is Saturday
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Generate all weekends until the exam
+            while (currentDate < examDate) {
+                // Add Saturday
+                weekends.push({
+                    date: new Date(currentDate),
+                    title: `Weekend ${weekends.length/2 + 1}A`,
+                    completed: false,
+                    quote: getRandomQuote(),
+                    reward: getReward(weekends.length)
+                });
+                
+                // Add Sunday
+                currentDate.setDate(currentDate.getDate() + 1);
+                weekends.push({
+                    date: new Date(currentDate),
+                    title: `Weekend ${weekends.length/2 + 1}B`,
+                    completed: false,
+                    quote: getRandomQuote(),
+                    reward: getReward(weekends.length)
+                });
+                
+                // Move to next Saturday
+                currentDate.setDate(currentDate.getDate() + 6);
+            }
+            
+            // Add the exam day as the final milestone
+            weekends.push({
+                date: new Date(examDate),
+                title: "Exam Day",
+                completed: false,
+                quote: "You've prepared for this moment. Trust your knowledge, stay calm, and show them what you're made of!",
+                reward: "Celebration dinner after the exam - you've earned it!"
+            });
+            
+            return weekends;
+        }
+        
+        // Inspirational quotes
+        function getRandomQuote() {
+            const quotes = [
+                "The only way to learn is by doing. Space explorers don't just read about the stars—they reach for them.",
+                "Study like there's a universe of knowledge waiting to be discovered, because there is.",
+                "In the vastness of knowledge, focus on one star at a time. Progress comes from consistency.",
+                "Even the greatest astronauts started with small steps. Keep moving forward.",
+                "Your brain is like a spaceship—capable of traveling to incredible places through learning.",
+                "Knowledge is the fuel that powers your journey through the cosmos of success.",
+                "The distance between where you are and where you want to be is measured in dedication.",
+                "Stars don't shine without darkness. Your challenges today are creating your brilliance tomorrow.",
+                "The universe rewards those who prepare. Study now, shine later.",
+                "Every moment of study is a step closer to the stars you're reaching for.",
+                "Like a rocket needs all its components to launch, success needs preparation, determination, and action.",
+                "The cosmos of possibility opens to those who are prepared when opportunity knocks.",
+                "Your potential is as limitless as the universe itself.",
+                "In the orbit of success, persistence is your gravitational force.",
+                "The stars are not just for gazing at, but for navigating toward. Let knowledge be your compass."
+            ];
+            return quotes[Math.floor(Math.random() * quotes.length)];
+        }
+        
+        // Rewards for milestones
+        function getReward(index) {
+            const rewards = [
+                "Coffee break with your favorite snack",
+                "20-minute power nap voucher",
+                "Movie night selection privilege",
+                "Special home-cooked meal request",
+                "30-minute massage break",
+                "Choose the dinner menu for tomorrow",
+                "One household chore skipped",
+                "Video game break for 1 hour",
+                "Special dessert of your choice",
+                "Uninterrupted reading time for your favorite book",
+                "Remote control privileges for the evening",
+                "A personalized motivational playlist",
+                "A scenic drive to clear your mind",
+                "Breakfast in bed tomorrow",
+                "Your choice of weekend activity next free weekend"
+            ];
+            return rewards[index % rewards.length];
+        }
+        
+        // Planets for milestones
+        const planetColors = [
+            "linear-gradient(45deg, #FF6D00, #FF9E80)", // Mercury
+            "linear-gradient(45deg, #FFA000, #FFECB3)", // Venus
+            "linear-gradient(45deg, #2196F3, #BBDEFB)", // Earth
+            "linear-gradient(45deg, #F44336, #FFCDD2)", // Mars
+            "linear-gradient(45deg, #FF9800, #FFE0B2)", // Jupiter
+            "linear-gradient(45deg, #FFC107, #FFECB3)", // Saturn
+            "linear-gradient(45deg, #03A9F4, #B3E5FC)", // Uranus
+            "linear-gradient(45deg, #3F51B5, #C5CAE9)", // Neptune
+            "linear-gradient(45deg, #9C27B0, #E1BEE7)"  // Pluto (still a planet in our hearts)
+        ];
+        
+        let studyMilestones = [];
+        let currentMilestoneId = null;
+        
+        // Update countdown to exam
+        function updateCountdown() {
+            const now = new Date();
+            const timeLeft = examDate - now;
+            
+            if (timeLeft <= 0) {
+                document.getElementById('examCountdown').textContent = "Exam day is here! Good luck!";
+                return;
+            }
+            
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('examCountdown').textContent = 
+                `Mission Countdown: ${days} days, ${hours} hours, ${minutes} minutes to launch`;
+        }
+        
+        // Check the password
+        function checkPassword() {
+            const enteredPassword = document.getElementById('password').value;
+            if (enteredPassword === accessCode) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                initApp();
+            } else {
+                alert('Incorrect launch code. Access denied.');
+            }
+        }
+        
+        // Initialize the app
+        function initApp() {
+            studyMilestones = generateWeekends();
+            renderMilestones();
+            updateCountdown();
+            setInterval(updateCountdown, 60000); // Update every minute
+            updateProgress();
+            loadProgress();
+        }
+        
+        // Render the milestones
+        function renderMilestones() {
+            const container = document.getElementById('milestonesContainer');
+            container.innerHTML = '';
+            
+            studyMilestones.forEach((milestone, index) => {
+                const milestoneDiv = document.createElement('div');
+                milestoneDiv.className = 'milestone';
+                
+                const planetDiv = document.createElement('div');
+                planetDiv.className = 'planet';
+                if (milestone.completed) {
+                    planetDiv.classList.add('completed');
+                } else if (index > 0 && !studyMilestones[index-1].completed) {
+                    planetDiv.classList.add('locked');
+                }
+                
+                // Set unique planet color
+                planetDiv.style.background = planetColors[index % planetColors.length];
+                
+                planetDiv.textContent = index + 1;
+                planetDiv.onclick = () => showMilestone(index);
+                
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'milestone-date';
+                dateDiv.textContent = milestone.date.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                milestoneDiv.appendChild(planetDiv);
+                milestoneDiv.appendChild(dateDiv);
+                container.appendChild(milestoneDiv);
+            });
+            
+            document.getElementById('totalCount').textContent = studyMilestones.length;
+            updateRocketPosition();
+        }
+        
+        // Show milestone details
+        function showMilestone(index) {
+            const milestone = studyMilestones[index];
+            
+            // Don't open locked milestones
+            if (index > 0 && !studyMilestones[index-1].completed && !milestone.completed) {
+                alert('This milestone is locked! Complete the previous ones first.');
+                return;
+            }
+            
+            currentMilestoneId = index;
+            document.getElementById('modalTitle').textContent = milestone.title;
+            
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <p>Date: ${milestone.date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                })}</p>
+                <div class="quote">"${milestone.quote}"</div>
+                <img src="/api/placeholder/400/250" alt="Placeholder Image" />
+                <div class="reward">
+                    <h3>Reward for completion:</h3>
+                    <p>${milestone.reward}</p>
+                </div>
+            `;
+            
+            // Show/hide the complete button based on milestone status
+            const completeButton = document.getElementById('completeButton');
+            if (milestone.completed) {
+                completeButton.textContent = 'Already Completed';
+                completeButton.disabled = true;
+            } else {
+                completeButton.textContent = 'Mark as Completed';
+                completeButton.disabled = false;
+            }
+            
+            document.getElementById('milestoneModal').style.display = 'flex';
+        }
+        
+        // Close the modal
+        function closeModal() {
+            document.getElementById('milestoneModal').style.display = 'none';
+        }
+        
+        // Mark a milestone as complete
+        function markComplete() {
+            studyMilestones[currentMilestoneId].completed = true;
+            saveProgress();
+            renderMilestones();
+            updateProgress();
+            closeModal();
+        }
+        
+        // Update progress display
+        function updateProgress() {
+            const completed = studyMilestones.filter(m => m.completed).length;
+            document.getElementById('completedCount').textContent = completed;
+            updateRocketPosition();
+        }
+        
+        // Update rocket position based on progress
+        function updateRocketPosition() {
+            const completed = studyMilestones.filter(m => m.completed).length;
+            const total = studyMilestones.length;
+            const progress = completed / total;
+            
+            const rocket = document.getElementById('progressRocket');
+            const isHorizontal = window.innerWidth > 768;
+            
+            if (isHorizontal) {
+                const pathWidth = document.querySelector('.path-line').offsetWidth;
+                const newPosition = 20 + (pathWidth - 40) * progress;
+                rocket.style.left = newPosition + 'px';
+            } else {
+                const pathHeight = document.querySelector('.milestones').offsetHeight;
+                const newPosition = 20 + (pathHeight - 40) * progress;
+                rocket.style.top = newPosition + 'px';
+            }
+        }
+        
+        // Save progress to local storage
+        function saveProgress() {
+            const progressData = studyMilestones.map(m => m.completed);
+            localStorage.setItem('studyAppProgress', JSON.stringify(progressData));
+        }
+        
+        // Load progress from local storage
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('studyAppProgress');
+            if (savedProgress) {
+                const progressData = JSON.parse(savedProgress);
+                progressData.forEach((completed, index) => {
+                    if (index < studyMilestones.length) {
+                        studyMilestones[index].completed = completed;
+                    }
+                });
+                renderMilestones();
+                updateProgress();
+            }
+        }
+        
+        // Add event listener for window resize to update rocket position
+        window.addEventListener('resize', updateRocketPosition);
+    </script>
+</body>
+</html>
