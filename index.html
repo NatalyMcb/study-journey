@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Study Quest</title>
+    <title>Dean's Space Odyssey</title>
     <style>
         body, html {
             margin: 0;
@@ -289,7 +289,7 @@
     
     <!-- Login Screen -->
     <div class="login-container" id="loginScreen">
-        <h1>Cosmic Study Quest</h1>
+        <h1>Dean's Space Odyssey</h1>
         <div class="login-form">
             <h2>Mission Control Access</h2>
             <p>Enter the launch code to begin your cosmic journey</p>
@@ -300,7 +300,7 @@
     
     <!-- Main App -->
     <div class="app-container" id="appContainer">
-        <h1>Cosmic Study Quest: Journey to Exam Day</h1>
+        <h1>Dean's Space Odyssey: Journey to Exam Day</h1>
         
         <div class="countdown">
             <span id="examCountdown">Loading mission countdown...</span>
@@ -337,7 +337,7 @@
     
     <script>
         // Set the password
-        const accessCode = "studyspace";
+        const accessCode = "Deanalie";
         
         // The exam date
         const examDate = new Date('April 10, 2025');
@@ -348,6 +348,17 @@
             const today = new Date();
             let currentDate = new Date(today);
             
+            // Names for weekend study sessions
+            const outpostNames = [
+                "Mercury Outpost", "Venus Station", 
+                "Mars Base", "Jupiter Observatory", 
+                "Saturn Ring Station", "Uranus Research Center", 
+                "Neptune Deep Space", "Pluto Far Reach",
+                "Ceres Mining Colony", "Europa Ice Lab",
+                "Titan Methane Station", "Ganymede Outpost",
+                "Callisto Research Base", "Io Volcanic Observatory"
+            ];
+            
             // Find the next Saturday
             while (currentDate.getDay() !== 6) { // 6 is Saturday
                 currentDate.setDate(currentDate.getDate() + 1);
@@ -355,10 +366,13 @@
             
             // Generate all weekends until the exam
             while (currentDate < examDate) {
+                const weekNumber = weekends.length/2;
+                const outpostName = outpostNames[weekNumber % outpostNames.length];
+                
                 // Add Saturday
                 weekends.push({
                     date: new Date(currentDate),
-                    title: `Weekend ${weekends.length/2 + 1}A`,
+                    title: `${outpostName} Alpha`, // Saturday title
                     completed: false,
                     quote: getRandomQuote(),
                     reward: getReward(weekends.length)
@@ -368,7 +382,7 @@
                 currentDate.setDate(currentDate.getDate() + 1);
                 weekends.push({
                     date: new Date(currentDate),
-                    title: `Weekend ${weekends.length/2 + 1}B`,
+                    title: `${outpostName} Beta`, // Sunday title
                     completed: false,
                     quote: getRandomQuote(),
                     reward: getReward(weekends.length)
