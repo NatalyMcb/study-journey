@@ -527,66 +527,8 @@
         }
         
         // Show milestone details
-// Show milestone details
-function showMilestone(index) {
-    const milestone = studyMilestones[index];
-    
-    // Don't open locked milestones
-    if (index > 0 && !studyMilestones[index-1].completed && !milestone.completed) {
-        alert('This milestone is locked! Complete the previous ones first.');
-        return;
-    }
-    
-    currentMilestoneId = index;
-    document.getElementById('modalTitle').textContent = milestone.title;
-    
-    // Array of your image URLs - replace these with your actual image URLs
-    const imageUrls = [
-        "https://imgur.com/a/h6C81BX"
-        "https://imgur.com/juWo2RL"
-        "https://imgur.com/FYPucuJ"
-        "https://imgur.com/JlnrkdX"
-        "https://imgur.com/yPigMDt"
-        "https://imgur.com/AkcRsKq"
-        "https://imgur.com/s57dw1T"
-        "https://imgur.com/ri7IiQa"
-        "https://imgur.com/z7l9DBP"
-        "https://imgur.com/CgThhyf"
-        "https://imgur.com/7ZHwXiE"
-    ];
-    
-    // Get appropriate image URL based on milestone index
-    // This will cycle through your images if you have more milestones than images
-    const imageUrl = imageUrls[index % imageUrls.length];
-    
-    const content = document.getElementById('modalContent');
-    content.innerHTML = `
-        <p>Date: ${milestone.date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-        })}</p>
-        <div class="quote">"${milestone.quote}"</div>
-        <img src="${imageUrl}" alt="Study Motivation" />
-        <div class="reward">
-            <h3>Reward for completion:</h3>
-            <p>${milestone.reward}</p>
-        </div>
-    `;
-    
-    // Show/hide the complete button based on milestone status
-    const completeButton = document.getElementById('completeButton');
-    if (milestone.completed) {
-        completeButton.textContent = 'Already Completed';
-        completeButton.disabled = true;
-    } else {
-        completeButton.textContent = 'Mark as Completed';
-        completeButton.disabled = false;
-    }
-    
-    document.getElementById('milestoneModal').style.display = 'flex';
-}            const milestone = studyMilestones[index];
+        function showMilestone(index) {
+            const milestone = studyMilestones[index];
             
             // Don't open locked milestones
             if (index > 0 && !studyMilestones[index-1].completed && !milestone.completed) {
@@ -597,6 +539,24 @@ function showMilestone(index) {
             currentMilestoneId = index;
             document.getElementById('modalTitle').textContent = milestone.title;
             
+            // Array of your image URLs - replace these with your actual image URLs
+            const imageUrls = [
+                "https://i.imgur.com/juWo2RL.jpg",
+                "https://i.imgur.com/FYPucuJ.jpg",
+                "https://i.imgur.com/JlnrkdX.jpg",
+                "https://i.imgur.com/yPigMDt.jpg",
+                "https://i.imgur.com/AkcRsKq.jpg",
+                "https://i.imgur.com/s57dw1T.jpg",
+                "https://i.imgur.com/ri7IiQa.jpg",
+                "https://i.imgur.com/z7l9DBP.jpg",
+                "https://i.imgur.com/CgThhyf.jpg",
+                "https://i.imgur.com/7ZHwXiE.jpg"
+            ];
+            
+            // Get appropriate image URL based on milestone index
+            // This will cycle through your images if you have more milestones than images
+            const imageUrl = imageUrls[index % imageUrls.length];
+            
             const content = document.getElementById('modalContent');
             content.innerHTML = `
                 <p>Date: ${milestone.date.toLocaleDateString('en-US', {
@@ -606,7 +566,7 @@ function showMilestone(index) {
                     year: 'numeric'
                 })}</p>
                 <div class="quote">"${milestone.quote}"</div>
-                <img src="/api/placeholder/400/250" alt="Placeholder Image" />
+                <img src="${imageUrl}" alt="Study Motivation" />
                 <div class="reward">
                     <h3>Reward for completion:</h3>
                     <p>${milestone.reward}</p>
