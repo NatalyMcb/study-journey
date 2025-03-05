@@ -180,10 +180,12 @@
         
         .modal-content {
             background-color: rgba(16, 26, 63, 0.9);
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
-            max-width: 500px;
+            max-width: 400px;
             width: 80%;
+            max-height: 85vh; /* Limit to 85% of viewport height */
+            overflow-y: auto; /* Add scrolling if content is too long */
             text-align: center;
             position: relative;
             border: 1px solid #5151f9;
@@ -201,6 +203,8 @@
         
         .milestone-content img {
             max-width: 100%;
+            max-height: 200px; /* Limit image height */
+            object-fit: contain; /* Maintain aspect ratio */
             border-radius: 10px;
             margin: 15px 0;
             box-shadow: 0 0 15px rgba(139, 233, 253, 0.3);
